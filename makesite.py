@@ -187,6 +187,7 @@ def main():
 
     # Load layouts.
     page_layout = fread('layout/page.html')
+    chapter_layout = fread('layout/chapter.html')
     post_layout = fread('layout/post.html')
     list_layout = fread('layout/list.html')
     item_layout = fread('layout/item.html')
@@ -194,6 +195,7 @@ def main():
     item_xml = fread('layout/item.xml')
 
     # Combine layouts to form final layouts.
+    chapter_layout = render(page_layout, content=chapter_layout)
     post_layout = render(page_layout, content=post_layout)
     list_layout = render(page_layout, content=list_layout)
 
@@ -202,6 +204,11 @@ def main():
                page_layout, **params)
     make_pages('content/[!_]*.html', '_site/{{ slug }}/index.html',
                page_layout, **params)
+
+    # Create books.
+    revelation = make_pages('content/Revelation/*.html',
+                            '_site/Revelation/{{ slug }}/index.html',
+                            chapter_layout, book='Revelation', **params)
 
     # Create blogs.
     blog_posts = make_pages('content/blog/*.md',
