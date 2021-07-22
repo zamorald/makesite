@@ -188,16 +188,9 @@ def main():
     # Load layouts.
     page_layout = fread('layout/page.html')
     chapter_layout = fread('layout/chapter.html')
-    post_layout = fread('layout/post.html')
-    list_layout = fread('layout/list.html')
-    item_layout = fread('layout/item.html')
-    feed_xml = fread('layout/feed.xml')
-    item_xml = fread('layout/item.xml')
 
     # Combine layouts to form final layouts.
     chapter_layout = render(page_layout, content=chapter_layout)
-    post_layout = render(page_layout, content=post_layout)
-    list_layout = render(page_layout, content=list_layout)
 
     # Create site pages.
     make_pages('content/_index.html', '_site/index.html',
@@ -209,26 +202,6 @@ def main():
     revelation = make_pages('content/Revelation/*.html',
                             '_site/Revelation/{{ slug }}/index.html',
                             chapter_layout, book='Revelation', **params)
-
-    # Create blogs.
-    blog_posts = make_pages('content/blog/*.md',
-                            '_site/blog/{{ slug }}/index.html',
-                            post_layout, blog='blog', **params)
-    news_posts = make_pages('content/news/*.html',
-                            '_site/news/{{ slug }}/index.html',
-                            post_layout, blog='news', **params)
-
-    # Create blog list pages.
-    make_list(blog_posts, '_site/blog/index.html',
-              list_layout, item_layout, blog='blog', title='Blog', **params)
-    make_list(news_posts, '_site/news/index.html',
-              list_layout, item_layout, blog='news', title='News', **params)
-
-    # Create RSS feeds.
-    make_list(blog_posts, '_site/blog/rss.xml',
-              feed_xml, item_xml, blog='blog', title='Blog', **params)
-    make_list(news_posts, '_site/news/rss.xml',
-              feed_xml, item_xml, blog='news', title='News', **params)
 
 
 # Test parameter to be set temporarily by unit tests.
