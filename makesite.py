@@ -174,7 +174,7 @@ def main():
 
     # Default parameters.
     params = {
-        'base_path': 'Bible-Commentary',
+        'base_path': '/Bible-Commentary',
         'subtitle': 'Bible Commentary',
         'author': 'Luis D. Zamora',
         'site_url': 'http://localhost:8000',
