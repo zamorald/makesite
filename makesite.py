@@ -38,7 +38,7 @@ import datetime
 
 def fread(filename):
     """Read file and close the file."""
-    with open(filename, 'r') as f:
+    with open(filename, mode='r', encoding='utf-8') as f:
         return f.read()
 
 
@@ -48,7 +48,7 @@ def fwrite(filename, text):
     if not os.path.isdir(basedir):
         os.makedirs(basedir)
 
-    with open(filename, 'w') as f:
+    with open(filename, mode='w', encoding='utf-8') as f:
         f.write(text)
 
 
@@ -149,23 +149,6 @@ def make_pages(src, dst, layout, **params):
     return sorted(items, key=lambda x: x['date'], reverse=True)
 
 
-def make_list(posts, dst, list_layout, item_layout, **params):
-    """Generate list page for a blog."""
-    items = []
-    for post in posts:
-        item_params = dict(params, **post)
-        item_params['summary'] = truncate(post['content'])
-        item = render(item_layout, **item_params)
-        items.append(item)
-
-    params['content'] = ''.join(items)
-    dst_path = render(dst, **params)
-    output = render(list_layout, **params)
-
-    log('Rendering list => {} ...', dst_path)
-    fwrite(dst_path, output)
-
-
 def main():
     # Create a new _site directory from scratch.
     if os.path.isdir('_site'):
@@ -174,10 +157,10 @@ def main():
 
     # Default parameters.
     params = {
-        'base_path': '',
-        'subtitle': 'Bible Commentary',
+        'base_path': '/Commentary/',
+        'subtitle': 'Commentary on the Bible',
         'author': 'Luis D. Zamora',
-        'site_url': 'http://localhost:8000/Bible-Commentary/',
+        'site_url': 'http://localhost:8000',
         'current_year': datetime.datetime.now().year
     }
 
@@ -195,15 +178,13 @@ def main():
     # Create site pages.
     make_pages('content/_index.html', '_site/index.html',
                page_layout, **params)
-    make_pages('content/[!_]*.html', '_site/{{ slug }}/index.html',
-               page_layout, **params)
 
     # Create books.
     chapters = glob.glob('content\\**\\**\\')
     for chapter in chapters:
         # compile index.html per chapter from any verses with commentary
         verses = glob.glob(chapter + '_*.html')
-        with open(chapter + 'index.html', 'w') as c:
+        with open(chapter + 'index.html', mode='w', encoding='utf-8') as c:
             for verse in sorted(verses):
                 content = fread(str(verse))
                 c.write(content)
