@@ -174,10 +174,10 @@ def main():
 
     # Default parameters.
     params = {
-        'base_path': '/Bible-Commentary',
+        'base_path': ' ',
         'subtitle': 'Bible Commentary',
         'author': 'Luis D. Zamora',
-        'site_url': 'http://localhost:8000',
+        'site_url': 'http://localhost:8000/Bible-Commentary/',
         'current_year': datetime.datetime.now().year
     }
 
@@ -199,10 +199,15 @@ def main():
                page_layout, **params)
 
     # Create books.
-    revelation = make_pages('content/Revelation/*.html',
-                            '_site/Revelation/{{ slug }}/index.html',
-                            chapter_layout, book='Revelation', **params)
-
+    chapters = glob.glob('content\\**\\**\\')
+    for chapter in chapters:
+        # compile index.html per chapter from any verses with commentary
+        verses = glob.glob(chapter + '_*.html')
+        with open(chapter + 'index.html', 'w') as c:
+            for verse in sorted(verses):
+                content = fread(str(verse))
+                c.write(content)
+        make_pages(chapter + 'index.html', '_site\\' + chapter.removeprefix('content\\') + 'index.html', chapter_layout, **params)
 
 # Test parameter to be set temporarily by unit tests.
 _test = None
